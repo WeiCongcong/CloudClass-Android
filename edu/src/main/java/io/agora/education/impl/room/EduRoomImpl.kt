@@ -201,6 +201,10 @@ internal class EduRoomImpl(
                 true, null, mutableListOf(), System.currentTimeMillis())
         /**此处需要把localUserInfo设置进localUser中*/
         when (options.roleType) {
+            EduUserRole.INVISIBLE -> {
+                // 暂无相关的设计，所以暂时使用EduStudentImpl临时代替
+                syncSession.localUser = EduStudentImpl(localUserInfo)
+            }
             EduUserRole.STUDENT -> {
                 syncSession.localUser = EduStudentImpl(localUserInfo)
             }

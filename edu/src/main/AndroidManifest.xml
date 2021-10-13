@@ -39,17 +39,20 @@
 
         <activity android:name=".classroom.OneToOneClassActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppThemeFullScreen">
+            android:theme="@style/AppThemeFullScreen"
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity android:name=".classroom.SmallClassActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppThemeFullScreen">
+            android:theme="@style/AppThemeFullScreen"
+            android:configChanges="orientation|screenSize">
         </activity>
 
         <activity android:name=".classroom.LargeClassActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppThemeFullScreen">
+            android:theme="@style/AppThemeFullScreen"
+            android:configChanges="orientation|screenSize">
         </activity>
     </application>
 </manifest>

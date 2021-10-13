@@ -493,7 +493,7 @@ abstract class BaseClassActivity : BaseActivity(),
                 EduUserRole.TEACHER -> EduContextUserRole.Teacher
                 EduUserRole.STUDENT -> EduContextUserRole.Student
                 EduUserRole.ASSISTANT -> EduContextUserRole.Assistant
-                EduUserRole.EduRoleTypeInvalid -> EduContextUserRole.Assistant
+                EduUserRole.INVISIBLE -> EduContextUserRole.InVisible
             }
         }
 
@@ -508,7 +508,7 @@ abstract class BaseClassActivity : BaseActivity(),
 
     private val extAppContext = object : ExtAppContext {
         override fun launchExtApp(appIdentifier: String): Int {
-            return extAppManager?.launchExtApp(appIdentifier,TimeUtil.currentTimeMillis())
+            return extAppManager?.launchExtApp(appIdentifier, TimeUtil.currentTimeMillis())
                     ?: AgoraExtAppErrorCode.ExtAppEngineError
         }
 
@@ -584,9 +584,10 @@ abstract class BaseClassActivity : BaseActivity(),
             eduRoom?.eventListener = this
 
             joinConfig = onRoomJoinConfig()
-            joinRoomAsStudent(
+            joinRoom(
                     config.userName,
                     config.userUuid,
+                    EduUserRole.fromValue(config.roleType),
                     joinConfig.autoSubscribe,
                     joinConfig.autoPublish,
                     joinConfig.needUserListener,
@@ -612,11 +613,11 @@ abstract class BaseClassActivity : BaseActivity(),
 
     protected abstract fun onRoomJoined(success: Boolean, student: EduStudent?, error: EduError? = null)
 
-    private fun joinRoomAsStudent(name: String?, uuid: String?,
-                                  autoSubscribe: Boolean,
-                                  autoPublish: Boolean,
-                                  needUserListener: Boolean,
-                                  callback: EduCallback<EduStudent?>) {
+    private fun joinRoom(name: String?, uuid: String?, role: EduUserRole,
+                         autoSubscribe: Boolean,
+                         autoPublish: Boolean,
+                         needUserListener: Boolean,
+                         callback: EduCallback<EduStudent?>) {
         if (isJoining) {
             Log.e(tag, "join fail because you are joining the classroom")
             return
@@ -628,7 +629,7 @@ abstract class BaseClassActivity : BaseActivity(),
         }
 
         isJoining = true
-        val options = RoomJoinOptions(uuid!!, name, EduUserRole.STUDENT,
+        val options = RoomJoinOptions(uuid!!, name, role,
                 RoomMediaOptions(autoSubscribe, autoPublish), launchConfig?.roomType)
 
         eduRoom?.joinClassroom(options, object : EduCallback<EduUser> {

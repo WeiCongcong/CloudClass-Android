@@ -168,6 +168,7 @@ data class EduContextUserInfo(
 }
 
 enum class EduContextUserRole(val value: Int) {
+    InVisible(0),
     Teacher(1),
     Student(2),
     Assistant(3);
@@ -175,6 +176,7 @@ enum class EduContextUserRole(val value: Int) {
     companion object {
         fun fromValue(value: Int): EduContextUserRole {
             return when (value) {
+                InVisible.value -> InVisible
                 Teacher.value -> Teacher
                 Student.value -> Student
                 Assistant.value -> Assistant

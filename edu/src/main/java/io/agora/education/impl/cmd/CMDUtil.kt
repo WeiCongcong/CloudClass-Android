@@ -22,7 +22,7 @@ internal object CMDUtil {
                 TypeToken<CMDResponseBody<RtmMsg>>() {}.type)
         val rtmMsg = cmdResponseBody.data
         val fromUser = if (eduRoom == null) {
-            EduFromUserInfo(rtmMsg.fromUser.userUuid, rtmMsg.fromUser.userName, EduUserRole.EduRoleTypeInvalid)
+            EduFromUserInfo(rtmMsg.fromUser.userUuid, rtmMsg.fromUser.userName, EduUserRole.INVISIBLE)
         } else {
             Convert.convertFromUserInfo(rtmMsg.fromUser, (eduRoom as EduRoomImpl).getCurRoomType())
         }

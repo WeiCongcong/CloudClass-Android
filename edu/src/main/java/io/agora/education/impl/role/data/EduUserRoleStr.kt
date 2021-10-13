@@ -45,6 +45,10 @@ enum class EduUserRoleStr(var value: String) {
      *  kickUser:local
         updateStream:local
         deleteStream:local*/
-    audience     ("audience")
+    audience     ("audience"),
+    /**
+     * 透明人
+     * */
+    invisible("invisible");
 }
 

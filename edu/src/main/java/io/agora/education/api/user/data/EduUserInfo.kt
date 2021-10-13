@@ -3,10 +3,30 @@ package io.agora.education.api.user.data
 import io.agora.education.api.stream.data.EduStreamEvent
 
 enum class EduUserRole(var value: Int) {
-    EduRoleTypeInvalid(0),
+    INVISIBLE(0),
     TEACHER(1),
     STUDENT(2),
     ASSISTANT(3);
+
+    companion object {
+        fun fromValue(value: Int): EduUserRole {
+            return when (value) {
+                INVISIBLE.value -> {
+                    INVISIBLE
+                }
+                TEACHER.value -> {
+                    TEACHER
+                }
+                STUDENT.value -> {
+                    STUDENT
+                }
+                ASSISTANT.value -> {
+                    ASSISTANT
+                }
+                else -> INVISIBLE
+            }
+        }
+    }
 }
 
 open class EduBaseUserInfo(

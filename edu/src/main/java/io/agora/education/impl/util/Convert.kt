@@ -78,6 +78,9 @@ internal object Convert {
     /**根据EduUserRole枚举返回角色字符串*/
     fun convertUserRole(role: EduUserRole, roomType: RoomType): String {
         return when (role) {
+            EduUserRole.INVISIBLE -> {
+                EduUserRoleStr.invisible.name
+            }
             EduUserRole.TEACHER -> {
                 EduUserRoleStr.host.name
             }

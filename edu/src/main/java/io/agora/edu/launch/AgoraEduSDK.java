@@ -248,7 +248,7 @@ public class AgoraEduSDK {
 
         if (!AgoraEduRoleType.isValid(config.getRoleType())) {
             String msg = String.format(context.getString(R.string.parametererror), "The value of " +
-                    "AgoraEduLaunchConfig.roleType is not expected, it must be 2!");
+                    "AgoraEduLaunchConfig.roleType is not expected, it must be 0 or 2!");
             callbackError(context, msg);
         }
 
@@ -302,7 +302,7 @@ public class AgoraEduSDK {
         getReporter().reportPreCheckStart();
 
         RoomPreCheckReq req = new RoomPreCheckReq(config.getRoomName(), config.getRoomType(),
-                String.valueOf(AgoraEduRoleType.AgoraEduRoleTypeStudent.getValue()),
+                String.valueOf(config.getRoleType()),
                 config.getStartTime(), config.getDuration(), config.getUserName(),
                 config.getBoardRegion(), config.getUserProperties());
         roomPre.preCheckClassRoom(config.getUserUuid(), req, new EduCallback<RoomPreCheckRes>() {

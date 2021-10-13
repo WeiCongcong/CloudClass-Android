@@ -136,6 +136,7 @@ open class BaseManager(
 
     protected fun userRoleConvert(role: EduUserRole): EduContextUserRole {
         return when (role) {
+            EduUserRole.INVISIBLE -> EduContextUserRole.InVisible
             EduUserRole.TEACHER -> EduContextUserRole.Teacher
             EduUserRole.STUDENT -> EduContextUserRole.Student
             EduUserRole.ASSISTANT -> EduContextUserRole.Assistant
