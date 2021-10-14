@@ -16,6 +16,7 @@ import io.agora.edu.launch.AgoraEduLaunchConfig
 import io.agora.education.api.EduCallback
 import io.agora.education.api.base.EduError
 import io.agora.education.api.room.EduRoom
+import io.agora.education.api.room.data.RoomType
 import io.agora.education.api.stream.data.EduStreamEvent
 import io.agora.education.api.stream.data.EduStreamInfo
 import io.agora.education.api.stream.data.LocalStreamInitOptions
@@ -25,6 +26,7 @@ import io.agora.education.api.user.data.EduBaseUserInfo
 import io.agora.education.api.user.data.EduUserInfo
 import io.agora.education.api.user.data.EduUserRole
 import io.agora.education.impl.Constants
+import io.agora.education.impl.Constants.Companion.AgoraLog
 import io.agora.educontext.*
 import io.agora.rte.data.RteLocalAudioState
 import io.agora.rte.data.RteLocalVideoState
@@ -205,7 +207,7 @@ open class BaseManager(
                 val value = if (closed) 2 else 1
                 localCameraDeviceState = value
                 Log.e(tag, "updateLocalCameraSwitchState->$localCameraDeviceState")
-                roomPre.updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(camera = value))
+                updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(camera = value))
             }
 
             override fun onFailure(error: EduError) {
@@ -224,7 +226,7 @@ open class BaseManager(
                 val cameraUnavailable = state == RteLocalVideoState.LOCAL_VIDEO_STREAM_STATE_FAILED.value
                         && !localVideoIsMuted()
                 val value = if (cameraUnavailable) 0 else 1
-                roomPre.updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(camera = value))
+                updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(camera = value))
             }
 
             override fun onFailure(error: EduError) {
@@ -305,7 +307,7 @@ open class BaseManager(
                 val value = if (closed) 2 else 1
                 localMicDeviceState = value
                 Log.e(tag, "updateLocalMicSwitchState->$value")
-                roomPre.updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(mic = value))
+                updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(mic = value))
             }
 
             override fun onFailure(error: EduError) {
@@ -325,7 +327,7 @@ open class BaseManager(
                 val micUnavailable = state == RteLocalVideoState.LOCAL_VIDEO_STREAM_STATE_FAILED.value
                         && !localAudioIsMuted()
                 val value = if (micUnavailable) 0 else 1
-                roomPre.updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(mic = value))
+                updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(mic = value))
             }
 
             override fun onFailure(error: EduError) {
@@ -434,7 +436,6 @@ open class BaseManager(
             }
         })
     }
-
 
     /** https://confluence.agoralab.co/pages/viewpage.action?pageId=719462858 */
     protected fun notifyUserDeviceState(info: EduContextUserDetailInfo, callback: EduCallback<Unit>) {
@@ -581,6 +582,16 @@ open class BaseManager(
             override fun onFailure(error: EduError) {
             }
         })
+    }
+
+    protected fun updateDeviceState(userUuid: String, req: DeviceStateUpdateReq) {
+        // This event callback is too frequent
+        // reduce server pressure and not report temporarily in largeClass only
+        if (launchConfig.roomType == RoomType.LARGE_CLASS.value) {
+            AgoraLog.w("$tag->reduce server pressure and not report temporarily in largeClass only")
+            return
+        }
+        roomPre.updateDeviceState(userUuid, req)
     }
 
     private fun modifyLocalStream(stream: EduStreamInfo?, sourceType: VideoSourceType) {

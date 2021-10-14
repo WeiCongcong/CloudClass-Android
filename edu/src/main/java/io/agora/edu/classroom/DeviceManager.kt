@@ -72,7 +72,7 @@ class DeviceManager(
         val req = DeviceStateUpdateReq(if (deviceConfig.cameraEnabled) 1 else 0,
                 deviceConfig.cameraFacing.value, if (deviceConfig.micEnabled) 1 else 0,
                 if (deviceConfig.speakerEnabled) 1 else 0)
-        roomPre.updateDeviceState(launchConfig.userUuid, req)
+        updateDeviceState(launchConfig.userUuid, req)
     }
 
     @Synchronized
@@ -116,7 +116,7 @@ class DeviceManager(
         deviceConfig.cameraFacing = if (deviceConfig.cameraFacing == Front) Back else Front
         val code = eduUser.switchCamera()
         val value = deviceConfig.cameraFacing.value
-        roomPre.updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(facing = value))
+        updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(facing = value))
         eduContext?.deviceContext()?.getHandlers()?.forEach {
             val facing = deviceConfig.cameraFacing
             it.onCameraFacingChanged(facing)
@@ -137,7 +137,7 @@ class DeviceManager(
         deviceConfig.speakerEnabled = enable
         val code = RteEngineImpl.setEnableSpeakerphone(enable)
         val value = if (enable) 1 else 0
-        roomPre.updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(speaker = value))
+        updateDeviceState(launchConfig.userUuid, DeviceStateUpdateReq(speaker = value))
         eduContext?.deviceContext()?.getHandlers()?.forEach {
             it.onSpeakerEnabledChanged(enable)
         }
