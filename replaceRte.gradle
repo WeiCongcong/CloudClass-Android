@@ -1,0 +1,29 @@
+task replaceRte {
+    boolean a = project.hasProperty('USE_ARSENAL')
+    if (a) {
+        boolean tmp = Boolean.parseBoolean(USE_ARSENAL)
+        updateEntry("useArsenal", tmp)
+    } else {
+        logger.log(LogLevel.ERROR, "parameter useArsenal is required")
+        throw new StopExecutionException("parameter useArsenal is required")
+    }
+}
+
+def updateEntry(key, value) {
+    logger.log(LogLevel.WARN, "updateEntry->key:" + key + ", value:" + value.toString())
+    File propFile = file("gradle.properties")
+    if (propFile.exists()) {
+        def Properties props = new Properties()
+        props.load(new FileInputStream(propFile))
+        if (!props.containsKey(key)) {
+            logger.log(LogLevel.ERROR, "Property '" + key + "' does not exist in gradle.properties!")
+        }
+        props[key] = value.toString()
+        propFile.setWritable(true)
+        props.store(new FileOutputStream(propFile), "")
+    } else {
+        logger.log(LogLevel.ERROR, "gradle.properties not exists!")
+    }
+}
+
+
