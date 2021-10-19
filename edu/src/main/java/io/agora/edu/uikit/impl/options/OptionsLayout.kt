@@ -20,6 +20,7 @@ import io.agora.edu.uikit.handlers.UserHandler
 import io.agora.edu.uikit.impl.chat.ChatPopupWidget
 import io.agora.edu.uikit.impl.chat.ChatPopupWidgetListener
 import io.agora.edu.uikit.impl.chat.tabs.ChatTabConfig
+import io.agora.edu.uikit.impl.container.AbsUIContainer
 import io.agora.edu.uikit.impl.container.AgoraUIConfig
 import io.agora.edu.uikit.impl.tool.AgoraUIApplianceType
 import io.agora.edu.uikit.impl.users.RosterType
@@ -63,7 +64,8 @@ class OptionsLayout : LinearLayout, View.OnClickListener {
 
     fun init(eduContext: EduContextPool?, parent: RelativeLayout, role: EduContextUserRole,
              width: Int, right: Int, mode: OptionLayoutMode? = OptionLayoutMode.Joint,
-             widgetManager: UiWidgetManager? = null, tabConfigs: List<ChatTabConfig>? = null) {
+             container: AbsUIContainer, widgetManager: UiWidgetManager? = null,
+             tabConfigs: List<ChatTabConfig>? = null) {
         this.eduContext = eduContext
         this.role = role
         orientation = VERTICAL
@@ -84,7 +86,7 @@ class OptionsLayout : LinearLayout, View.OnClickListener {
         addPopupButton(rosterItem!!, width, R.drawable.agora_option_icon_roster)
 
         widgetManager?.let {
-            chatItem = ChatLayoutPopupItem(parent, width, right, eduContext, it)
+            chatItem = ChatLayoutPopupItem(parent, container, width, right, eduContext, it)
             addPopupButton(chatItem!!, width, R.drawable.agora_option_icon_chat)
         }
 
@@ -656,13 +658,14 @@ fun sort2(list: MutableList<EduContextUserDetailInfo>): MutableList<EduContextUs
  * than other popup windows
  */
 @SuppressLint("ViewConstructor")
-class ChatLayoutPopupItem(private val container: RelativeLayout,
+class ChatLayoutPopupItem(private val parent: RelativeLayout,
+                          private val container: AbsUIContainer,
                           private val itemWidth: Int,
                           private val rightMargin: Int,
                           private val eduContext: EduContextPool?,
                           private val widgetManager: UiWidgetManager,
                           private val tagConfigs: List<ChatTabConfig>? = null)
-    : OptionsLayoutPopupItem(container, OptionItemType.Chat, itemWidth) {
+    : OptionsLayoutPopupItem(parent, OptionItemType.Chat, itemWidth) {
 
     private val ratio = 340 / 430f
     private lateinit var window: ChatPopupWidget
@@ -672,6 +675,7 @@ class ChatLayoutPopupItem(private val container: RelativeLayout,
         val chat = widgetManager.create(UiWidgetManager.DefaultWidgetId.Chat.name, eduContext)
         (chat as? ChatPopupWidget)?.let {
             window = it
+            window.setContainer(container)
             window.chatWidgetListener = object : ChatPopupWidgetListener {
                 override fun onChatPopupWidgetClosed() {
                     this@ChatLayoutPopupItem.isActivated = false
@@ -694,7 +698,7 @@ class ChatLayoutPopupItem(private val container: RelativeLayout,
     override fun onCreatePopupView(): ViewGroup {
         if (::window.isInitialized) {
             window.setEduContext(eduContext)
-            window.init(container, 0, 0, 0, 0)
+            window.init(parent, 0, 0, 0, 0)
             window.getLayout()?.let {
                 return it
             }
@@ -705,8 +709,8 @@ class ChatLayoutPopupItem(private val container: RelativeLayout,
     }
 
     override fun onPopupRect(): Rect {
-        val containerH = container.height
-        val containerW = container.width
+        val containerH = parent.height
+        val containerW = parent.width
 
         val top: Int
         val bottom: Int

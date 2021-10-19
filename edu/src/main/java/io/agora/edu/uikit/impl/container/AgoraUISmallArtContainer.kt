@@ -105,11 +105,11 @@ class AgoraUISmallClassArtContainer(
         getActivity()?.let {
             it.runOnUiThread {
                 AgoraUIDialogBuilder(it)
-                    .title(it.resources.getString(R.string.agora_dialog_sent_log_success))
-                    .message(logData)
-                    .positiveText(it.resources.getString(R.string.confirm))
-                    .build()
-                    .show()
+                        .title(it.resources.getString(R.string.agora_dialog_sent_log_success))
+                        .message(logData)
+                        .positiveText(it.resources.getString(R.string.confirm))
+                        .build()
+                        .show()
             }
         }
     }
@@ -174,15 +174,15 @@ class AgoraUISmallClassArtContainer(
 
     private fun initOptionLayout(layout: ViewGroup) {
         val role = getEduContext()?.userContext()?.localUserInfo()?.role
-            ?: EduContextUserRole.Student
+                ?: EduContextUserRole.Student
         val mode = if (AgoraUIConfig.isLargeScreen) OptionLayoutMode.Separate else OptionLayoutMode.Joint
         val container = if (layout is RelativeLayout) {
             layout
         } else {
             val container = RelativeLayout(getContext())
             val params = ViewGroup.MarginLayoutParams(
-                ViewGroup.MarginLayoutParams.MATCH_PARENT,
-                ViewGroup.MarginLayoutParams.MATCH_PARENT)
+                    ViewGroup.MarginLayoutParams.MATCH_PARENT,
+                    ViewGroup.MarginLayoutParams.MATCH_PARENT)
             layout.addView(container, params)
             container
         }
@@ -190,7 +190,8 @@ class AgoraUISmallClassArtContainer(
         OptionsLayout(getContext()).let {
             optionLayout = it
 
-            it.init(getEduContext(), container, role, optionIconSize, optionRight, mode, widgetManager)
+            it.init(getEduContext(), container, role, optionIconSize, optionRight, mode,
+                    this, widgetManager)
             it.popUpListener = object : OptionPopupListener {
                 override fun onPopupShow(item: OptionItemType) {
 
@@ -221,7 +222,7 @@ class AgoraUISmallClassArtContainer(
         // from other option items
         if (mode == OptionLayoutMode.Separate) {
             OptionsLayoutWhiteboardItem(container, optionIconSize,
-                optionRight, optionRight, optionRight, getEduContext()).let {
+                    optionRight, optionRight, optionRight, getEduContext()).let {
                 whiteboardToolItem = it
 
                 val param = RelativeLayout.LayoutParams(optionIconSize, optionIconSize)
@@ -244,50 +245,54 @@ class AgoraUISmallClassArtContainer(
     }
 
     private fun showLeaveDialog() {
-        layout()?.let { it.post {
-            AgoraUIDialogBuilder(it.context)
-                    .title(it.context.resources.getString(R.string.agora_dialog_end_class_confirm_title))
-                    .message(it.context.resources.getString(R.string.agora_dialog_end_class_confirm_message))
-                    .negativeText(it.context.resources.getString(R.string.cancel))
-                    .positiveText(it.context.resources.getString(R.string.confirm))
-                    .positiveClick { getEduContext()?.roomContext()?.leave() }
-                    .build()
-                    .show()
-        }}
+        layout()?.let {
+            it.post {
+                AgoraUIDialogBuilder(it.context)
+                        .title(it.context.resources.getString(R.string.agora_dialog_end_class_confirm_title))
+                        .message(it.context.resources.getString(R.string.agora_dialog_end_class_confirm_message))
+                        .negativeText(it.context.resources.getString(R.string.cancel))
+                        .positiveText(it.context.resources.getString(R.string.confirm))
+                        .positiveClick { getEduContext()?.roomContext()?.leave() }
+                        .build()
+                        .show()
+            }
+        }
     }
 
     private fun showKickDialog(userId: String) {
-        layout()?.let { it.post {
-            val customView = LayoutInflater.from(it.context).inflate(
-                R.layout.agora_kick_dialog_radio_layout, it, false)
-            val optionOnce = customView.findViewById<RelativeLayout>(R.id.agora_kick_dialog_once_layout)
-            val optionForever = customView.findViewById<RelativeLayout>(R.id.agora_kick_dialog_forever_layout)
+        layout()?.let {
+            it.post {
+                val customView = LayoutInflater.from(it.context).inflate(
+                        R.layout.agora_kick_dialog_radio_layout, it, false)
+                val optionOnce = customView.findViewById<RelativeLayout>(R.id.agora_kick_dialog_once_layout)
+                val optionForever = customView.findViewById<RelativeLayout>(R.id.agora_kick_dialog_forever_layout)
 
-            optionOnce.isActivated = true
-            optionForever.isActivated = false
-
-            optionOnce.setOnClickListener {
                 optionOnce.isActivated = true
                 optionForever.isActivated = false
-            }
 
-            optionForever.setOnClickListener {
-                optionOnce.isActivated = false
-                optionForever.isActivated = true
-            }
-
-            AgoraUICustomDialogBuilder(it.context)
-                .title(it.context.resources.getString(R.string.agora_dialog_kick_student_title))
-                .negativeText(it.context.resources.getString(R.string.cancel))
-                .positiveText(it.context.resources.getString(R.string.confirm))
-                .positiveClick {
-                    val forever = !optionOnce.isActivated && optionForever.isActivated
-                    getEduContext()?.userContext()?.kick(userId, forever)
+                optionOnce.setOnClickListener {
+                    optionOnce.isActivated = true
+                    optionForever.isActivated = false
                 }
-                .setCustomView(customView)
-                .build()
-                .show()
-        }}
+
+                optionForever.setOnClickListener {
+                    optionOnce.isActivated = false
+                    optionForever.isActivated = true
+                }
+
+                AgoraUICustomDialogBuilder(it.context)
+                        .title(it.context.resources.getString(R.string.agora_dialog_kick_student_title))
+                        .negativeText(it.context.resources.getString(R.string.cancel))
+                        .positiveText(it.context.resources.getString(R.string.confirm))
+                        .positiveClick {
+                            val forever = !optionOnce.isActivated && optionForever.isActivated
+                            getEduContext()?.userContext()?.kick(userId, forever)
+                        }
+                        .setCustomView(customView)
+                        .build()
+                        .show()
+            }
+        }
     }
 
     private fun initValues(resources: Resources, width: Int, height: Int) {
