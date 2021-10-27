@@ -56,6 +56,8 @@
     <string name="agora_message_chat_student_ban_remote">%s was silenced by %s</string>
     <string name="agora_message_chat_student_allow_local">You were allowed to chat by %s</string>
     <string name="agora_message_chat_student_allow_remote">%s was allowed to chat by %s</string>
+    <string name="agora_message_chat_select_image_action" translatable="false">.Select_Image</string>
+    <string name="agora_message_chat_select_image_key" translatable="false">data</string>
 
     <!-- Video -->
     <string name="agora_video_reward" translatable="false">&#215;%d</string>

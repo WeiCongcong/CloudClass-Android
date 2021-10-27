@@ -1,5 +1,6 @@
 package io.agora.edu.core.context
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -32,6 +33,12 @@ abstract class ChatContext : AbsHandlerPool<IChatHandler>() {
                                          callback: EduContextCallback<EduContextChatItemSendResult>): EduContextChatItem
 
     abstract fun fetchConversationHistory(startId: String?, callback: EduContextCallback<List<EduContextChatItem>>)
+
+    /**
+     * select image for image message; the selected picture data is sent via local broadcast
+     * @param activityContext context from current Activity
+     * */
+    abstract fun selectImage(activityContext: Context)
 }
 
 abstract class DeviceContext : io.agora.edu.core.context.AbsHandlerPool<IDeviceHandler>() {

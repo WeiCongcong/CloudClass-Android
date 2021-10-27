@@ -12,9 +12,11 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.RelativeLayout
 import androidx.core.view.ViewCompat
+import io.agora.edu.R
 import io.agora.edu.core.AgoraEduCore
 import io.agora.edu.core.AgoraEduCoreConfig
 import io.agora.edu.core.AgoraEduCoreStateListener
+import io.agora.edu.core.AgoraEduCoreStatics.selectImageResultCode
 import io.agora.edu.core.context.EduContextCallback
 import io.agora.edu.core.context.EduContextError
 import io.agora.edu.core.context.EduContextErrors.parameterErrCode
@@ -35,7 +37,6 @@ abstract class BaseClassActivity : BaseActivity() {
         const val tag = "BaseClassActivity"
         const val launchConfig = "LAUNCHCONFIG"
         const val preCheckData = "PRECHECKDATA"
-        const val resultCode = 808
     }
 
     protected var launchConfig: AgoraEduLaunchConfig? = null
@@ -81,6 +82,17 @@ abstract class BaseClassActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         launchConfig?.let { EyeProtection.setNeedShow(it.eyeCare == 1) }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == selectImageResultCode && resultCode == RESULT_OK) {
+            // result of select image
+            val intent = Intent()
+            intent.action = packageName.plus(resources.getString(R.string.chat_window_select_image_action))
+            intent.putExtra(resources.getString(R.string.chat_window_select_image_key), data?.data)
+            sendBroadcast(intent)
+        }
     }
 
     override fun onBackPressed() {

@@ -1,9 +1,12 @@
 package io.agora.edu.core.internal.edu.classroom
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import com.google.gson.Gson
 import io.agora.edu.R
 import io.agora.edu.core.AgoraEduCoreConfig
+import io.agora.edu.core.AgoraEduCoreStatics.selectImageResultCode
 import io.agora.edu.core.internal.edu.common.api.Chat
 import io.agora.edu.core.internal.edu.common.impl.ChatImpl
 import io.agora.edu.core.context.*
@@ -315,6 +318,16 @@ internal class ChatManager(
                     }
                 }
             }
+        }
+    }
+
+    fun selectImage(activityContext: Context) {
+        if (activityContext is Activity) {
+            val intent = Intent()
+            intent.type = "image/*"
+            intent.action = Intent.ACTION_GET_CONTENT
+            activityContext.startActivityForResult(Intent.createChooser(intent,
+                    activityContext.resources.getString(R.string.chat_window_select_image)), selectImageResultCode)
         }
     }
 }

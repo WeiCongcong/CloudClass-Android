@@ -125,6 +125,9 @@
     <string name="chat_window_leave_message_format">%s (%s) left room</string>
     <string name="chat_window_role_student">student</string>
     <string name="chat_window_role_teacher">teacher</string>
+    <string name="chat_window_select_image_action" translatable="false">.Select_Image</string>
+    <string name="chat_window_select_image_key" translatable="false">data</string>
+    <string name="chat_window_select_image">Select Image</string>
 
     <!-- Tool Window -->
     <string name="tool_window_title">Tool</string>

@@ -121,6 +121,7 @@
     <string name="chat_window_leave_message_format">%s (%s) 离开教室</string>
     <string name="chat_window_role_student">学生</string>
     <string name="chat_window_role_teacher">老师</string>
+    <string name="chat_window_select_image">选择图片</string>
 
     <!-- Tool Window -->
     <string name="tool_window_title">工具</string>

@@ -269,6 +269,10 @@ class AgoraEduCore(
             AgoraLog.i("$tag:fetchConversationHistory->startId:$startId")
             chatManager?.pullConversationRecords(startId, true, callback)
         }
+
+        override fun selectImage(activityContext: Context) {
+            chatManager?.selectImage(activityContext)
+        }
     }
 
     private val handsUpContextImpl = object : HandsUpContext() {
@@ -1729,6 +1733,10 @@ data class AgoraEduCoreConfig(
         val autoPublish: Boolean = false,
         val needUserListener: Boolean = true
 )
+
+object AgoraEduCoreStatics {
+    const val selectImageResultCode = 78
+}
 
 interface AgoraEduCoreStateListener {
     fun onCreated()

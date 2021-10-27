@@ -1,8 +1,18 @@
 package io.agora.edu.uikit.impl.container
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.res.Resources
 import android.graphics.Rect
+import android.net.Uri
+import android.util.Log
+import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import io.agora.edu.R
 import io.agora.edu.core.context.EduContextPool
 import io.agora.edu.core.context.EduContextUserDetailInfo
@@ -269,6 +279,32 @@ class AgoraUISmallClassContainer(
         getEduContext()?.videoContext()?.addHandler(smallContainerTeacherVideoHandler)
         // register userHandler
         getEduContext()?.userContext()?.addHandler(smallContainerUserHandler)
+
+
+        // test select image
+        val textView = AppCompatTextView(layout.context)
+        textView.text = "选择图片"
+        textView.gravity = Gravity.CENTER
+        textView.setOnClickListener {
+            getEduContext()?.chatContext()?.selectImage(layout.context)
+        }
+        layout.addView(textView, 240, 240)
+        val imageView = AppCompatImageView(layout.context)
+        imageView.scaleType = ImageView.ScaleType.FIT_CENTER
+        layout.addView(imageView, 480, 480)
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val data = intent?.getParcelableExtra<Uri>(layout.context.resources
+                        .getString(R.string.agora_message_chat_select_image_key))
+                data?.let {
+                    imageView.setImageURI(it)
+                }
+            }
+        }
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(layout.context.packageName.plus(
+                layout.context.resources.getString(R.string.agora_message_chat_select_image_action)))
+        layout.context.registerReceiver(receiver, intentFilter)
     }
 
     override fun resize(layout: ViewGroup, left: Int, top: Int, width: Int, height: Int) {
