@@ -13,6 +13,9 @@ open class UserHandler : IUserHandler {
     override fun onCoHostListUpdated(list: MutableList<EduContextUserDetailInfo>) {
     }
 
+    override fun onUserCountChanged(total: Int) {
+    }
+
     override fun onUserReward(userInfo: EduContextUserInfo) {
     }
 

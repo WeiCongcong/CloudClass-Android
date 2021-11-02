@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver
 import android.view.WindowManager
 import android.widget.RelativeLayout
 import androidx.core.view.ViewCompat
+import com.google.gson.Gson
 import io.agora.agoraactionprocess.AgoraActionListener
 import io.agora.agoraactionprocess.AgoraActionMsgRes
 import io.agora.base.callback.Callback
@@ -38,6 +39,7 @@ import io.agora.education.api.statistics.ConnectionState
 import io.agora.education.api.statistics.NetworkQuality
 import io.agora.education.api.stream.data.EduStreamEvent
 import io.agora.education.api.stream.data.EduStreamInfo
+import io.agora.education.api.stream.data.VideoEncoderConfig
 import io.agora.education.api.stream.data.VideoSourceType
 import io.agora.education.api.user.EduStudent
 import io.agora.education.api.user.EduUser
@@ -333,7 +335,33 @@ abstract class BaseClassActivity : BaseActivity(),
         }
 
         override fun setVideoConfig(config: EduContextVideoConfig) {
-            TODO("Not yet implemented")
+            AgoraLog.i("$tag:userContextImpl-setVideoConfig->config:${Gson().toJson(config)}")
+            val videoConfig = VideoEncoderConfig(videoDimensionWidth = config.videoDimensionWidth,
+                    videoDimensionHeight = config.videoDimensionHeight, frameRate = config.frameRate)
+            getLocalUser(object : EduCallback<EduUser?> {
+                override fun onSuccess(res: EduUser?) {
+                    res?.let {
+                        it.resetVideoEncoderConfig(videoConfig)
+                    }
+                }
+
+                override fun onFailure(error: EduError) {
+                }
+            })
+        }
+
+        override fun getCurUserCount(callback: EduContextCallback<Int>) {
+            eduRoom?.getUserCount(object : EduCallback<Int> {
+                override fun onSuccess(res: Int?) {
+                    res?.let {
+                        callback.onSuccess(it)
+                    }
+                }
+
+                override fun onFailure(error: EduError) {
+                    callback.onFailure(EduContextError(error.type, error.msg))
+                }
+            })
         }
     }
 
@@ -381,7 +409,19 @@ abstract class BaseClassActivity : BaseActivity(),
         }
 
         override fun setVideoConfig(config: EduContextVideoConfig) {
-            TODO("Not yet implemented")
+            AgoraLog.i("$tag:videoContextImpl-setVideoConfig->config:${Gson().toJson(config)}")
+            val videoConfig = VideoEncoderConfig(videoDimensionWidth = config.videoDimensionWidth,
+                    videoDimensionHeight = config.videoDimensionHeight, frameRate = config.frameRate)
+            getLocalUser(object : EduCallback<EduUser?> {
+                override fun onSuccess(res: EduUser?) {
+                    res?.let {
+                        it.resetVideoEncoderConfig(videoConfig)
+                    }
+                }
+
+                override fun onFailure(error: EduError) {
+                }
+            })
         }
     }
 
@@ -1010,6 +1050,12 @@ abstract class BaseClassActivity : BaseActivity(),
 
     override fun onRemoteUsersInitialized(users: List<EduUserInfo>, classRoom: EduRoom) {
 
+    }
+
+    override fun onUserCountChanged(total: Int, classRoom: EduRoom) {
+        userContext.getHandlers()?.forEach {
+            it.onUserCountChanged(total)
+        }
     }
 
     override fun onRemoteUsersJoined(users: List<EduUserInfo>, classRoom: EduRoom) {

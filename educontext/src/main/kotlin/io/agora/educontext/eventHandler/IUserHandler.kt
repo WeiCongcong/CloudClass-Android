@@ -10,6 +10,12 @@ interface IUserHandler {
 
     fun onCoHostListUpdated(list: MutableList<EduContextUserDetailInfo>)
 
+    /**
+     * callback for changes in the number of users
+     * @param total the current total number of users in the classroom
+     * */
+    fun onUserCountChanged(total: Int)
+
     fun onUserReward(userInfo: EduContextUserInfo)
 
     fun onKickOut()

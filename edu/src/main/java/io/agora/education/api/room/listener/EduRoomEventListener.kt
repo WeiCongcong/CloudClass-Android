@@ -17,6 +17,8 @@ interface EduRoomEventListener {
 
     fun onRemoteUsersInitialized(users: List<EduUserInfo>, classRoom: EduRoom)
 
+    fun onUserCountChanged(total: Int, classRoom: EduRoom)
+
     fun onRemoteUsersJoined(users: List<EduUserInfo>, classRoom: EduRoom)
 
     fun onRemoteUserLeft(userEvent: EduUserEvent, classRoom: EduRoom)

@@ -114,4 +114,6 @@ interface EduUser {
      * 301:network error，透传后台错误msg字段*/
     fun removeRoomProperties(properties: MutableList<String>,
                              cause: MutableMap<String, String>, callback: EduCallback<Unit>)
+
+    fun resetVideoEncoderConfig(videoEncoderConfig: VideoEncoderConfig): EduError
 }

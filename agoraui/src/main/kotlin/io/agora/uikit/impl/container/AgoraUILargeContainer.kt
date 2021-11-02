@@ -2,12 +2,10 @@ package io.agora.uikit.impl.container
 
 import android.content.res.Resources
 import android.graphics.Rect
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import io.agora.educontext.EduContextPool
-import io.agora.educontext.EduContextUserDetailInfo
-import io.agora.educontext.EduContextUserInfo
-import io.agora.educontext.EduContextVideoMode
+import io.agora.educontext.*
 import io.agora.uicomponent.UiWidgetManager
 import io.agora.uikit.R
 import io.agora.uikit.educontext.handlers.RoomHandler
@@ -84,6 +82,18 @@ class AgoraUILargeClassContainer(
                 toolbar?.setVerticalPosition(toolbarTopNoStudent, toolbarHeightNoStudent)
                 agoraUILoading?.setRect(whiteboardNoStudentVideoRect)
             }
+        }
+
+        override fun onUserCountChanged(total: Int) {
+            Log.e(tag, "当前教室总人数:$total")
+            eduContext?.userContext()?.getCurUserCount(object : EduContextCallback<Int> {
+                override fun onSuccess(target: Int?) {
+                    Log.e(tag, "主动获取当前教室总人数:$target")
+                }
+
+                override fun onFailure(error: EduContextError?) {
+                }
+            })
         }
 
         override fun onKickOut() {
@@ -218,15 +228,15 @@ class AgoraUILargeClassContainer(
         toolbarTopHasStudent = whiteboardDefaultRect.top + componentMargin
         toolbarHeightNoStudent = pagingControlTop - componentMargin - toolbarTopNoStudent
         toolbarHeightHasStudent = pagingControlTop - componentMargin - toolbarTopHasStudent
-        toolbar = AgoraUIToolBarBuilder(layout.context, getEduContext(), layout)
-                .foldTop(toolbarTopNoStudent)
-                .unfoldTop(toolbarTopNoStudent)
-                .unfoldLeft(border + componentMargin)
-                .unfoldHeight(toolbarHeightNoStudent)
-                .shadowWidth(shadow)
-                .build()
-        toolbar!!.setToolbarType(AgoraUIToolType.All)
-        toolbar!!.setContainer(this)
+//        toolbar = AgoraUIToolBarBuilder(layout.context, getEduContext(), layout)
+//                .foldTop(toolbarTopNoStudent)
+//                .unfoldTop(toolbarTopNoStudent)
+//                .unfoldLeft(border + componentMargin)
+//                .unfoldHeight(toolbarHeightNoStudent)
+//                .shadowWidth(shadow)
+//                .build()
+        toolbar?.setToolbarType(AgoraUIToolType.All)
+        toolbar?.setContainer(this)
         toolbar?.setVerticalPosition(toolbarTopNoStudent, toolbarHeightNoStudent)
 
         val chatLeft = width - teacherVideoW - border

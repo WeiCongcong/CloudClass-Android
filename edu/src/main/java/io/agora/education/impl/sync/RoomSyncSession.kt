@@ -18,6 +18,8 @@ internal open abstract class RoomSyncSession(val roomInfo: EduRoomInfo, val room
     /**本地缓存的人流数据*/
     private val eduUserInfoList = Collections.synchronizedList(mutableListOf<EduUserInfo>())
     private val eduStreamInfoList = Collections.synchronizedList(mutableListOf<EduStreamInfo>())
+    @Volatile
+    var eduUserCount: Int = 0
 
     @Synchronized
     fun getFullUserInfoList(): MutableList<EduUserInfo> {

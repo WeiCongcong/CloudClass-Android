@@ -164,27 +164,21 @@ class LargeClassActivity : BaseClassActivity() {
         super.onRemoteStreamsAdded(streamEvents, classRoom)
         teacherVideoManager?.notifyUserDetailInfo(EduUserRole.TEACHER)
         screenShareManager?.checkAndNotifyScreenShareStarted(streamEvents)
-        if (streamEvents.find { it.modifiedStream.publisher.role == EduUserRole.TEACHER } == null) {
-            userListManager?.notifyUserList()
-        }
+        userListManager?.notifyUserList()
     }
 
     override fun onRemoteStreamUpdated(streamEvents: MutableList<EduStreamEvent>, classRoom: EduRoom) {
         super.onRemoteStreamUpdated(streamEvents, classRoom)
         teacherVideoManager?.notifyUserDetailInfo(EduUserRole.TEACHER)
         screenShareManager?.checkAndNotifyScreenShareStarted(streamEvents)
-        if (streamEvents.find { it.modifiedStream.publisher.role == EduUserRole.TEACHER } == null) {
-            userListManager?.notifyUserList()
-        }
+        userListManager?.notifyUserList()
     }
 
     override fun onRemoteStreamsRemoved(streamEvents: MutableList<EduStreamEvent>, classRoom: EduRoom) {
         super.onRemoteStreamsRemoved(streamEvents, classRoom)
         teacherVideoManager?.notifyUserDetailInfo(EduUserRole.TEACHER)
         screenShareManager?.checkAndNotifyScreenShareRemoved(streamEvents)
-        if (streamEvents.find { it.modifiedStream.publisher.role == EduUserRole.TEACHER } == null) {
-            userListManager?.notifyUserList()
-        }
+        userListManager?.notifyUserList()
     }
 
     override fun onLocalStreamAdded(streamEvent: EduStreamEvent) {

@@ -19,6 +19,7 @@ import io.agora.education.api.base.EduError
 import io.agora.education.api.base.EduError.Companion.customMsgError
 import io.agora.education.api.base.EduError.Companion.httpError
 import io.agora.education.api.base.EduError.Companion.mediaError
+import io.agora.education.api.base.EduError.Companion.noError
 import io.agora.education.api.base.EduError.Companion.parameterError
 import io.agora.education.api.logger.LogLevel
 import io.agora.education.api.message.EduChatMsg
@@ -42,6 +43,7 @@ import io.agora.education.impl.user.data.request.*
 import io.agora.education.impl.user.network.UserService
 import io.agora.education.impl.util.Convert
 import io.agora.education.impl.util.Convert.convertFromUserInfo
+import io.agora.education.impl.util.Convert.convertVideoEncoderConfig
 import io.agora.rtc.Constants
 import io.agora.rtc.Constants.CLIENT_ROLE_AUDIENCE
 import io.agora.rtc.Constants.CLIENT_ROLE_BROADCASTER
@@ -611,5 +613,14 @@ internal open class EduUserImpl(
                                 error?.message ?: throwable?.message))
                     }
                 }))
+    }
+
+    override fun resetVideoEncoderConfig(videoEncoderConfig: VideoEncoderConfig): EduError {
+        val code = RteEngineImpl.setVideoEncoderConfiguration(convertVideoEncoderConfig(videoEncoderConfig))
+        return if (code == OK()) {
+            noError()
+        } else {
+            httpError(code, getError(code))
+        }
     }
 }

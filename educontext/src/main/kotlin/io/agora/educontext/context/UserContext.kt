@@ -2,6 +2,7 @@ package io.agora.educontext.context
 
 import android.view.ViewGroup
 import io.agora.educontext.AbsHandlerPool
+import io.agora.educontext.EduContextCallback
 import io.agora.educontext.EduContextRenderConfig
 import io.agora.educontext.EduContextVideoConfig
 import io.agora.educontext.eventHandler.IUserHandler
@@ -18,4 +19,6 @@ abstract class UserContext : AbsHandlerPool<IUserHandler>() {
 
     abstract fun updateFlexUserProps(userUuid: String, properties: MutableMap<String, String>,
                                      cause: MutableMap<String, String>?)
+
+    abstract fun getCurUserCount(callback: EduContextCallback<Int>)
 }

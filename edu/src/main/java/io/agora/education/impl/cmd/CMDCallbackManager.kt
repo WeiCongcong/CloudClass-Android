@@ -31,6 +31,10 @@ internal class CMDCallbackManager {
         classRoom.eventListener?.onRoomMessageReceived(message, classRoom)
     }
 
+    fun onUserCountChanged(total: Int, classRoom: EduRoom) {
+        classRoom.eventListener?.onUserCountChanged(total, classRoom)
+    }
+
     fun onRemoteUsersJoined(users: List<EduUserInfo>, classRoom: EduRoom) {
         classRoom.eventListener?.onRemoteUsersJoined(users, classRoom)
     }

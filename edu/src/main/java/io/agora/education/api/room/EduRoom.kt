@@ -42,6 +42,10 @@ abstract class EduRoom {
 
     /**code:message
      * 1:you haven't joined the room*/
+    abstract fun getUserCount(callback: EduCallback<Int>)
+
+    /**code:message
+     * 1:you haven't joined the room*/
     abstract fun getStudentCount(callback: EduCallback<Int>)
 
     /**code:message
@@ -77,7 +81,7 @@ abstract class EduRoom {
     protected abstract fun getRoomUuid(): String
 
     override fun equals(other: Any?): Boolean {
-        if(other == null) {
+        if (other == null) {
             return false
         }
         return if (other !is EduRoom) {

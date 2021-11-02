@@ -147,9 +147,15 @@ internal class CMDDispatch(private val eduRoom: EduRoom) {
                 AgoraLog.i("$TAG->Receive RTM of user online or offline->" +
                         "${(eduRoom as EduRoomImpl).getCurRoomUuid()}:${text}")
                 Log.w(TAG, " -- get user join leave message!")
-                if (rtmInOutMsg.onlineUsers == null) {
-                    rtmInOutMsg.onlineUsers = mutableListOf<OnlineUserInfo>()
-                }
+//                if (rtmInOutMsg.onlineUsers.isNullOrEmpty()) {
+//                    rtmInOutMsg.onlineUsers = mutableListOf()
+//                }
+//                if (rtmInOutMsg.offlineUsers.isNullOrEmpty()) {
+//                    rtmInOutMsg.offlineUsers = mutableListOf()
+//                }
+                // update total count
+                eduRoom.updateUserCount(rtmInOutMsg.total)
+                cmdCallbackManager.onUserCountChanged(rtmInOutMsg.total, eduRoom)
                 /**根据回调数据，维护本地存储的流列表，并返回有效数据(可能同时包含local和remote数据)*/
                 val validOnlineUsers = CMDDataMergeProcessor.addUserWithOnline(rtmInOutMsg.onlineUsers,
                         eduRoom.getCurUserList(), eduRoom.getCurRoomType())

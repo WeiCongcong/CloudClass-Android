@@ -104,6 +104,10 @@ internal class EduRoomImpl(
 
     lateinit var defaultUserName: String
 
+    internal fun updateUserCount(count: Int) {
+        syncSession.eduUserCount = count
+    }
+
     internal fun getCurRoomUuid(): String {
         return syncSession.roomInfo.roomUuid
     }
@@ -524,6 +528,16 @@ internal class EduRoomImpl(
             callback.onFailure(error)
         } else {
             callback.onSuccess(syncSession.roomStatus)
+        }
+    }
+
+    override fun getUserCount(callback: EduCallback<Int>) {
+        if (!joinSuccess) {
+            val error = notJoinedRoomError()
+            AgoraLog.e("$TAG->EduRoom[${getCurRoomUuid()}] getUserCount error:${error.msg}")
+            callback.onFailure(error)
+        } else {
+            callback.onSuccess(syncSession.eduUserCount)
         }
     }
 

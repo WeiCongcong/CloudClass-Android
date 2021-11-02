@@ -283,8 +283,11 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
         }
 
         val roomType = getRoomType(type)
-        val roleType = AgoraEduRoleType.AgoraEduRoleTypeInVisible.value
-//        val roleType = AgoraEduRoleType.AgoraEduRoleTypeStudent.value
+        var roleType = if (userName.startsWith("q")) {
+            AgoraEduRoleType.AgoraEduRoleTypeInVisible.value
+        } else {
+            AgoraEduRoleType.AgoraEduRoleTypeStudent.value
+        }
         val roomUuid = roomName.plus(roomType)
         val userUuid = userName.plus(roleType)
         var roomRegion = (if (TextUtils.isEmpty(tvRoomRegion.text)) tvRoomRegion.hint else tvRoomRegion.text).toString()
