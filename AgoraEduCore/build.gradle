@@ -3,7 +3,8 @@ plugins {
     id 'com.jakewharton.butterknife'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id 'com.github.dcendents.android-maven'
+//    // jitpack
+//    id 'com.github.dcendents.android-maven'
 }
 
 android {
@@ -16,8 +17,8 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode rootProject.ext.EduCore.versionCode
+        versionName rootProject.ext.EduCore.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -100,4 +101,28 @@ dependencies {
     compileOnly project(path: ':AgoraEduUIKit')
     compileOnly project(path: ':AgoraEduWidget')
     compileOnly project(path: ':hyphenate')
+}
+
+// special the version using when publishing to maven
+// used by maven.gradle
+project.group = rootProject.ext.maven.group
+project.version = rootProject.ext.EduCore.versionName
+project.description = "AgoraEduCore"
+project.ext.url = "https://bitbucket.agoralab.co/projects/ADUC/repos/cloudclass-android/browse"
+
+task sourcesJar(type: Jar) {
+    if (project.hasProperty("kotlin")) {
+        from android.sourceSets.main.java.getSrcDirs()
+    } else if (project.hasProperty("android")) {
+        from android.sourceSets.main.java.sourceFiles
+    } else {
+        println project
+        from sourceSets.main.allSource
+    }
+    classifier = 'sources'
+}
+
+def maven_gradle_path = "${rootDir.absolutePath}/maven.gradle"
+if (new File(maven_gradle_path).exists()) {
+    apply from: maven_gradle_path
 }

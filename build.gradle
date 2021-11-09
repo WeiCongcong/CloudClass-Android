@@ -8,13 +8,14 @@ buildscript {
     repositories {
         maven { url 'https://jitpack.io' }
         google()
-        maven { url'http://maven.aliyun.com/nexus/content/groups/public' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.1'
+//        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,10 +27,10 @@ allprojects {
     repositories {
         maven { url 'https://jitpack.io' }
         google()
-        maven { url'http://maven.aliyun.com/nexus/content/groups/public' }
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}

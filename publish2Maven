@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+function publish() {
+  moduleName=$1
+  relativePath=$2
+  echo "current module is $moduleName, path is $relativePath"
+
+  if [ -a $relativePath ]; then
+    ./gradlew :$moduleName:publish
+  else
+    echo "the $moduleName module path not exists---$relativePath"
+  fi
+}
+
+publish AgoraClassSDK   ./AgoraClassSDK
+publish AgoraEduContext ./AgoraEduContext
+publish AgoraEduCore    ./AgoraEduCore
+publish AgoraEduExtApp  ./AgoraEduExtApp
+publish AgoraEduUIKit   ./AgoraEduUIKit
+publish AgoraEduWidget  ./AgoraEduWidget
+publish hyphenate       ./hyphenate

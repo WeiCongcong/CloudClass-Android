@@ -6,14 +6,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.EduExtApp.versionCode
+        versionName rootProject.ext.EduExtApp.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -42,4 +42,28 @@ dependencies {
     testImplementation "junit:junit:${rootProject.ext.dependencies.junit}"
     androidTestImplementation "androidx.test.ext:junit:${rootProject.ext.dependencies.ext_junit}"
     androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.ext.dependencies.espresso_core}"
+}
+
+// special the version using when publishing to maven
+// used by maven.gradle
+project.group = rootProject.ext.maven.group
+project.version = rootProject.ext.EduExtApp.versionName
+project.description = "AgoraEduExtApp"
+project.ext.url = "https://bitbucket.agoralab.co/projects/ADUC/repos/cloudclass-android/browse"
+
+task sourcesJar(type: Jar) {
+    if (project.hasProperty("kotlin")) {
+        from android.sourceSets.main.java.getSrcDirs()
+    } else if (project.hasProperty("android")) {
+        from android.sourceSets.main.java.sourceFiles
+    } else {
+        println project
+        from sourceSets.main.allSource
+    }
+    classifier = 'sources'
+}
+
+def maven_gradle_path = "${rootDir.absolutePath}/maven.gradle"
+if (new File(maven_gradle_path).exists()) {
+    apply from: maven_gradle_path
 }
