@@ -53,7 +53,6 @@ class WhiteBoardManager(
         private val whiteboardContext: WhiteboardContext) : CommonCallbacks, BoardEventListener,
         GlobalStateChangeListener, BoardPreloadEventListener {
     private val tag = "WhiteBoardManager"
-
     private lateinit var whiteBoardAppId: String
     private lateinit var whiteSdk: WhiteSdk
     private var whiteBoardView: WhiteboardView = WhiteboardView(context)
@@ -65,7 +64,7 @@ class WhiteBoardManager(
     private val maxScale = 10.0
     private val scaleStepper = 0.1
     private var curBoardState: BoardState? = null
-    private var curGranted: Boolean = false
+    private var curGranted: Boolean? = null
     private var curGrantedUsers = mutableListOf<String>()
     private var followTips = false
     private var curFollowState = false
@@ -78,12 +77,10 @@ class WhiteBoardManager(
     private var courseware: AgoraEduCourseware? = null
     private val defaultCoursewareName = "init"
     private var scenePpts: Array<Scene?>? = null
-
     private var loadPreviewPpt: Boolean = false
     private var lastSceneDir: String? = null
     private var inputTips = false
     private var transform = false
-
     private val webViewClient = object : WebViewClient() {
         override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
             val host = request?.url?.host
@@ -109,6 +106,7 @@ class WhiteBoardManager(
     }
     private val curDrawingConfig = WhiteboardDrawingConfig()
     private val sceneCameraConfigs: MutableMap<String, CameraState> = mutableMapOf()
+    private val userPayload = mutableMapOf(Pair("cursorName", launchConfig.userName))
 
     @SuppressLint("ClickableViewAccessibility")
     private val onTouchListener = View.OnTouchListener { v, event ->
@@ -147,6 +145,7 @@ class WhiteBoardManager(
         configuration.isEnableIFramePlugin = true
         configuration.isUserCursor = true
         configuration.region = region(region)
+        configuration.useMultiViews = true
         Log.e(tag, "newWhiteSdk---0")
         whiteSdk = WhiteSdk(whiteBoardView, context, configuration, this)
         Log.e(tag, "newWhiteSdk---1")
@@ -188,12 +187,11 @@ class WhiteBoardManager(
                         whiteboardContext.getHandlers()?.forEach {
                             it.onBoardPhaseChanged(EduBoardRoomPhase.disconnected)
                         }
-                        val params = RoomParams(uuid, boardToken)
+                        val params = RoomParams(uuid, boardToken, localUserUuid)
                         params.cameraBound = CameraBound(miniScale, maxScale)
                         params.isDisableNewPencil = false
-                        // if userRole is not teacher, default not permission to write.
-                        params.isWritable = launchConfig.roleType == AgoraEduRoleTypeTeacher.value
-                        params.useMultiViews = true
+                        params.isWritable = false
+                        params.userPayload = userPayload
 
                         val collectorStyleMap = HashMap<String, String>()
                         collectorStyleMap["position"] = "fixed"
@@ -204,9 +202,9 @@ class WhiteBoardManager(
                                 whiteBoardViewContainer.width.toFloat()
                         params.windowParams = WindowParams()
                         params.windowParams
-                            .setCollectorStyles(collectorStyleMap)
-                            .setChessboard(false)
-                            .setContainerSizeRatio(ratio)
+                                .setCollectorStyles(collectorStyleMap)
+                                .setChessboard(false)
+                                .setContainerSizeRatio(ratio)
 
                         boardProxy.init(whiteSdk, params)
                         ReportManager.getAPaasReporter().reportWhiteBoardStart()
@@ -645,17 +643,18 @@ class WhiteBoardManager(
                     }
                 })
             }
+
             if (curBoardState != null) {
                 val granted = curBoardState!!.isGranted(localUserUuid)
                 // set local device input switch
                 disableDeviceInputs(!granted)
                 if (granted != curGranted) {
-                    // granted changed
                     curGranted = granted
                     whiteboardContext.getHandlers()?.forEach {
                         it.onPermissionGranted(granted)
                     }
                     // set writeable follow granted
+                    AgoraLog.i("$tag->set writeable follow granted: $granted")
                     boardProxy.setWritable(granted)
                 }
                 val follow = curBoardState!!.isFollow
@@ -832,9 +831,9 @@ interface WhiteBoardManagerEventListener {
 }
 
 data class BoardStyleParams(
-    val left: Int = 0,
-    val bottom: Int = 0,
-    val styles: List<String>
+        val left: Int = 0,
+        val bottom: Int = 0,
+        val styles: List<String>
 )
 
 internal object BoardStyleInjector {
@@ -852,9 +851,9 @@ internal object BoardStyleInjector {
     }
 
     private const val javascriptFormat =
-        "var style = document.createElement('style');\n" +
-                "style.innerHTML = %s\n" +
-                "document.head.appendChild(style);"
+            "var style = document.createElement('style');\n" +
+                    "style.innerHTML = %s\n" +
+                    "document.head.appendChild(style);"
 
     fun injectBoardStyles(view: WebView) {
         val locale = Locale.getDefault()

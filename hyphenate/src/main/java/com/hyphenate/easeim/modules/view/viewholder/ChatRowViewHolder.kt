@@ -52,12 +52,17 @@ abstract class ChatRowViewHolder(
         }
 
         name?.text = message.getStringAttribute(EaseConstant.NICK_NAME, "")
+
         if (message.getIntAttribute(EaseConstant.ROLE, EaseConstant.ROLE_STUDENT) == EaseConstant.ROLE_TEACHER) {
             role?.text = context.getString(R.string.teacher)
             role?.visibility = View.VISIBLE
-        }else {
+        } else if (message.getIntAttribute(EaseConstant.ROLE, EaseConstant.ROLE_STUDENT) == EaseConstant.ROLE_ASSISTANT) {
+            role?.text = context.getString(R.string.assistant)
+            role?.visibility = View.VISIBLE
+        } else {
             role?.visibility = View.GONE
         }
+
         time?.text = EaseDateUtils.getTimestampString(context, Date(message.msgTime))
         onSetUpView()
         setListener()
