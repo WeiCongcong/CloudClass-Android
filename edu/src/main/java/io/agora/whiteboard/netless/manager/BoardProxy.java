@@ -90,7 +90,7 @@ public class BoardProxy extends NetlessManager<Room> implements RoomCallbacks {
     }
 
     public String getAppliance() {
-        if (t != null) {
+        if (t != null && t.getMemberState() != null) {
             return t.getMemberState().getCurrentApplianceName();
         }
         return null;
@@ -107,7 +107,7 @@ public class BoardProxy extends NetlessManager<Room> implements RoomCallbacks {
     }
 
     public int[] getStrokeColor() {
-        if (t != null) {
+        if (t != null && t.getMemberState() != null) {
             return t.getMemberState().getStrokeColor();
         }
         return null;
@@ -124,7 +124,7 @@ public class BoardProxy extends NetlessManager<Room> implements RoomCallbacks {
     }
 
     public Double getStrokeWidth() {
-        if (t != null) {
+        if (t != null && t.getMemberState() != null) {
             return t.getMemberState().getStrokeWidth();
         }
         return null;
@@ -141,7 +141,7 @@ public class BoardProxy extends NetlessManager<Room> implements RoomCallbacks {
     }
 
     public Double getTextSize() {
-        if (t != null) {
+        if (t != null && t.getMemberState() != null) {
             return t.getMemberState().getTextSize();
         }
         return null;
