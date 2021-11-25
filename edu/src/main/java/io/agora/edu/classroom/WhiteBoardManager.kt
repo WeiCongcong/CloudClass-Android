@@ -144,6 +144,7 @@ class WhiteBoardManager(
         configuration.isEnableIFramePlugin = true
         configuration.isUserCursor = true
         configuration.region = region(region)
+        configuration.useMultiViews = false
         Log.e(tag, "newWhiteSdk---0")
         whiteSdk = WhiteSdk(whiteBoardView, context, configuration, this)
         Log.e(tag, "newWhiteSdk---1")
@@ -184,7 +185,7 @@ class WhiteBoardManager(
                         whiteboardContext.getHandlers()?.forEach {
                             it.onBoardPhaseChanged(EduBoardRoomPhase.disconnected)
                         }
-                        val params = RoomParams(uuid, boardToken)
+                        val params = RoomParams(uuid, boardToken, localUserUuid)
                         params.cameraBound = CameraBound(miniScale, maxScale)
                         params.isDisableNewPencil = false
                         boardProxy.init(whiteSdk, params)
