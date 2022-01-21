@@ -486,7 +486,7 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
         var roomRegion = getRoomRegion(regionStr)
 
         // Deprecated, use project defined app id and token
-        try {
+//        try {
             // Agora app id, obtained from agora.io console
             val appId = EduApplication.getAppId()
             // Agora certificate, obtained from agora.io console
@@ -494,9 +494,9 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
             // Open-source rtm token generation
             rtmToken = RtmTokenBuilder().buildToken(appId, appCertificate,
                 userUuid, RtmTokenBuilder.Role.Rtm_User, 0)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
 
         var videoStreamKey: String = edVideoStreamKey.text.toString()
 
@@ -523,7 +523,7 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
                         widgetClass = AgoraWhiteBoardWidget::class.java,
                         widgetId = AgoraWidgetDefaultId.WhiteBoard.id,
                         extraInfo = mutableMapOf<String, Any>(Pair("fitMode", Retain))))
-                    val config: AgoraEduLaunchConfig = if (videoStreamKey == ""
+                    var config: AgoraEduLaunchConfig = if (videoStreamKey == ""
                         || encryptMode == AgoraEduEncryptMode.NONE.value) {
                         AgoraEduLaunchConfig(userName, userUuid, roomName, roomUuid,
                             roleType, roomType, it.rtmToken, null, duration, roomRegion,
@@ -536,13 +536,17 @@ class MainActivity2 : AppCompatActivity(), View.OnClickListener {
                             streamState, AgoraEduLatencyLevel.AgoraEduLatencyLevelUltraLow,
                             userProperties, null)
                     }
+                    config = AgoraEduLaunchConfig(userName, userUuid, roomName, roomUuid,
+                                    roleType, roomType, rtmToken, null, duration, roomRegion,
+                                    null, null, streamState,
+                                    AgoraEduLatencyLevel.AgoraEduLatencyLevelLow, userProperties, null)
 
-                    config.appId = it.appId
+                    config.appId = appId
 
                     // Set global app id record for further use
-                    EduApplication.setAppId(it.appId)
+//                    EduApplication.setAppId(it.appId)
 
-                    AgoraClassSdk.setConfig(AgoraClassSdkConfig(it.appId))
+                    AgoraClassSdk.setConfig(AgoraClassSdkConfig(appId))
                     AgoraClassSdk.launch(this@MainActivity2, config, AgoraEduLaunchCallback { event ->
                         Log.e(tag, ":launch-课堂状态:" + event.name)
                         notifyBtnJoinEnable(true)
